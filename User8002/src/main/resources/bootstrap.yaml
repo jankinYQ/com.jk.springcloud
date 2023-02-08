@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: userservice
+  profiles:
+    active: dev # 环境，开发环境 这里是dev
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml # 文件后缀名
+      discovery:
+        server-addr: localhost:8848  #nacos服务端地址
+
+# 这里配置nacos服务配置管理，项目启动时先读取优先级更高的
+#  bootstrap.yaml 得到nacos中的配置文件信息，然后读取与application.yaml配置文件合并加载
+#  2023-1-25

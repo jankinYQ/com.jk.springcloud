@@ -1,0 +1,53 @@
+server:
+  port: 308
+
+#服务注册要名字啊
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #nacos地址
+
+    gateway:
+      routes:
+        - id: userservice # 路由表示，唯一
+          uri: lb://userservice # 路由的目标地址
+          predicates: #断言
+            - Path=/user/** # 路径断言
+            - Before=2025-01-01T00:00:00.433+08:00[Asia/Shanghai] # before在某时间点前
+        - id: fileservice # 路由表示，唯一
+          uri: lb://fileservice # 路由的目标地址
+          predicates: #断言
+            - Path=/file/** #
+        - id: activity-task-service
+          uri: lb://activity-task-service # 路由的目标地址
+          predicates: #断言
+            - Path=/activity/**,/task/**,/userActivity/**,/userTask/**,/category/**
+        - id: noticeservice
+          uri: lb://noticeservice
+          predicates:
+            - Path=/notice/**
+
+
+##      在默认过滤规则里，添加请求头信息，可用于请求来源校验(来源于网关)，key=origin，value=gateway
+#      default-filters:
+#        - AddRequestHeader=origin,gateway
+#
+
+#跨域    这里配置不起作用？？
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins:
+#              - http://localhost:3000 # 允许哪些网站的跨域请求
+#              - http://localhost:308
+#            allowedMethods:   # 允许的跨域ajax请求方式
+#              - GET
+#              - POST
+#              - DELETE
+#              - PUT
+#            allowedHeaders: "*"  # 允许在请求中携带的请求头信息
+#            allowCredentials: true  # 是否允许携带cookie
+##            maxAge: 360000  #  跨域请求检测的有效期

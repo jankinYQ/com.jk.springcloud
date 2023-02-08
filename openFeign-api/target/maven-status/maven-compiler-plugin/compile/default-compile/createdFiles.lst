@@ -1,0 +1,3 @@
+com\jk\springcloud\clients\UserClient.class
+com\jk\springcloud\FeignMain.class
+com\jk\springcloud\common\R.class

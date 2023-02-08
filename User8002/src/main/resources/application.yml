@@ -1,0 +1,141 @@
+server:
+  port: 8002
+
+#服务注册要名字啊
+spring:
+#  在bootstrap.yml中已经配置了，这里可以不用
+#  application:
+#    name: userservice
+
+  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: localhost:8848 #nacos服务端地址
+
+#-------------------------sentinel---------------------------
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+
+#      web-context-unify: false #  关闭context整合
+#      #如果不关闭的话sentinel会把一个controller下所有请求归为一个链路下
+#      #false关闭的话则一个controller下不同请求为不同链路，方便链路的流控
+
+#----------------------------------------------------
+
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/activity?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+  mail:
+    host: smtp.qq.com
+    username: 1665298409@qq.com
+    password: imtpymvvembqddhh
+
+
+#--------------------RabbitMQ----------------------
+  rabbitmq:
+    host: 127.0.0.1  #  rabbitMQ的IP地址
+    port: 5672  #  端口
+    username: guest
+    password: guest
+    virtual-host: /
+    #  rabbit MQ生产者确认模式
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+
+   # //    -------------redis 哨兵模式测试代码-------------------------------------------
+
+
+#  redis:
+#    sentinel:
+#      master: mymaster #指定master名称，redis目录下 sentinel.conf 中配置的
+#      nodes: #指定redis-sentinel集群信息
+#        - 127.0.0.1:27001
+#        - 127.0.0.1:27002
+#        - 127.0.0.1:27003
+
+  #  //    ---------------------------------------------------------------------------------
+
+    # //    -------------redis 分片集群测试代码-------------------------------------------
+
+
+  redis:
+    cluster:
+      nodes: #指定redis-分片集群各个节点
+        - 127.0.0.1:6479
+        - 127.0.0.1:6480
+        - 127.0.0.1:6481
+        - 127.0.0.1:6482
+        - 127.0.0.1:6483
+        - 127.0.0.1:6484
+
+  #  //    ---------------------------------------------------------------------------------
+
+
+  # //    -------------缓存同步测试代码-------------------------------------------
+
+canal:
+  destination: example #canal 实例名称 ,要跟canal.properties中配置的一致
+  server: 127.0.0.1:11111
+
+  #  //    ---------------------------------------------------------------------------------
+
+
+
+#  ---------------配置Alibaba Cache--------------------------
+
+jetcache:
+  local:
+    default:
+      type: caffeine                #缓存类型
+      keyConvertor: fastjson        #Key转换器的全局变量
+  remote:
+    default:
+      type: redis
+      host: localhost
+      port: 6379
+      poolConfig:
+        maxTotal: 50
+
+
+#打印日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    在映射实体或属性时，将数据库中表明和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+
+#----------------------------feign------------------------
+#优化feign的一些配置
+feign:
+  httpclient:
+    enabled: true # 支持httpClient的开关
+    max-connections: 200 #最大连接数
+    max-connections-per-route: 50 #单个路径的最大连接数
+  sentinel:
+    enabled: true # 开启feign对sentinel的支持，sentinel熔断功能
+
+
+#-----------------seata------------------
+#seata:
+#  registry:
+#    type: nacos
+#    nacos:
+#      namespace: ""
+#      server-addr: 127.0.0.1:8848
+#      group: DEFAULT_GROUP
+#      application: seata-server
+#      username: nacos
+#      password: nacos
+#  tx-service-group: seata-demo #事务组名称
+#  service:
+#    vgroup-mapping: #事务组与cluster的映射
+#      seata-demo: default
+#  data-source-proxy-mode: XA
+

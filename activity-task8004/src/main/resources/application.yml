@@ -1,0 +1,121 @@
+server:
+  port: 8004
+
+#服务注册要名字啊
+spring:
+  application:
+    name: activity-task-service
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #nacos服务端地址
+
+#-------------------------sentinel---------------------------
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+
+#      web-context-unify: false #  关闭context整合
+#      #如果不关闭的话sentinel会把一个controller下所有请求归为一个链路下
+#      #false关闭的话则一个controller下不同请求为不同链路，方便链路的流控
+
+#----------------------------------------------------
+
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/activity?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+  mail:
+    host: smtp.qq.com
+    username: 1665298409@qq.com
+    password: nhpgooeebnslccae
+
+
+#--------------------RabbitMQ----------------------
+  rabbitmq:
+    host: 127.0.0.1  #  rabbitMQ的IP地址
+    port: 5672  #  端口
+    username: guest
+    password: guest
+    virtual-host: /
+#  ---------------配置Alibaba Cache--------------------------
+
+jetcache:
+  local:
+    default:
+      type: linkedhashmap
+      keyConvertor: fastjson
+
+  remote:
+    default:
+      type: redis
+      host: localhost
+      port: 6379
+      poolConfig:
+        maxTotal: 50
+
+
+#打印日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    在映射实体或属性时，将数据库中表明和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+
+#----------------------------feign------------------------
+#优化feign的一些配置
+feign:
+  httpclient:
+    enabled: true # 支持httpClient的开关
+    max-connections: 200 #最大连接数
+    max-connections-per-route: 50 #单个路径的最大连接数
+  sentinel:
+    enabled: true # 开启feign对sentinel的支持，sentinel熔断功能
+
+#-----------------seata------------------
+#seata:
+#  registry:
+#    type: nacos
+#    nacos:
+#      namespace: ""
+#      server-addr: 127.0.0.1:8848
+#      group: DEFAULT_GROUP
+#      application: seata-server
+#      username: nacos
+#      password: nacos
+#  tx-service-group: seata-demo #事务组名称
+#  service:
+#    vgroup-mapping: #事务组与cluster的映射
+#      seata-demo: default
+#  data-source-proxy-mode: XA
+
+
+# seata2
+#seata:
+#  enabled: true
+#  enable-auto-data-source-proxy: true #是否开启数据源自动代理,默认为true
+#  tx-service-group: seata-demo #test-tx-group  #要与配置文件中的vgroupMapping一致
+#  registry:  #registry根据seata服务端的registry配置
+#    type: nacos #默认为file
+#    nacos:
+#      application: seata-server #配置自己的seata服务
+#      server-addr: localhost:8848 #根据自己的seata服务配置
+#      username: nacos #根据自己的seata服务配置
+#      password: nacos #根据自己的seata服务配置
+#      namespace: "" #根据自己的seata服务配置
+#      cluster: default # 配置自己的seata服务cluster, 默认为 default
+#      group: DEFAULT_GROUP #根据自己的seata服务配置
+#  config:
+#    type: nacos #默认file,如果使用file不配置下面的nacos,直接配置seata.service
+#    nacos:
+#      server-addr: localhost:8848 #配置自己的nacos地址
+#      group: SEATA_GROUP #配置自己的dev
+#      username: nacos #配置自己的username
+#      password: nacos #配置自己的password
+#      namespace: "" #配置自己的namespace
+#      dataId: seataServer.properties # #配置自己的dataId,由于搭建服务端时把客户端的配置也写在了seataServer.properties,所以这里用了和服务端一样的配置文件,实际客户端和服务端的配置文件分离出来更好
+#  data-source-proxy-mode: XA

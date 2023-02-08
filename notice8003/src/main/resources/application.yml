@@ -1,0 +1,91 @@
+server:
+  port: 8003
+
+#服务注册要名字啊
+spring:
+  application:
+    name: noticeservice
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #nacos服务端地址
+
+#-------------------------sentinel---------------------------
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+
+#      web-context-unify: false #  关闭context整合
+#      #如果不关闭的话sentinel会把一个controller下所有请求归为一个链路下
+#      #false关闭的话则一个controller下不同请求为不同链路，方便链路的流控
+
+#----------------------------------------------------
+
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/activity?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+  mail:
+    host: smtp.qq.com
+    username: 1665298409@qq.com
+    password: imtpymvvembqddhh
+
+
+#--------------------RabbitMQ----------------------
+  rabbitmq:
+    addresses: 127.0.0.1:5672 , 192.168.43.3:5672  #  rabbitMQ集群的配置
+#    host: 127.0.0.1 #  rabbitMQ的IP地址
+#    port: 5672  #  端口
+    username: guest
+    password: guest
+    virtual-host: /
+    listener: #消费者确认，auto spring自动监听listen是否抛出异常
+      simple:
+        retry:
+          enabled: true # 开启消费者失败重试
+          initial-interval: 1000 # 初始的失败等待时长为1秒
+          multiplier: 1 # 下次失败等待时长倍数，下次等待时长 = multiplier * last-interval
+          max-attempts: 3 # 最大重试次数
+          stateless: true # true为无状态，false为有状态。如果业务中包含事务，这里改为false
+          max-interval: 10000  # 总共最大时长
+
+#  ---------------配置Alibaba Cache--------------------------
+
+jetcache:
+  local:
+    default:
+      type: linkedhashmap
+      keyConvertor: fastjson
+
+  remote:
+    default:
+      type: redis
+      host: localhost
+      port: 6379
+      poolConfig:
+        maxTotal: 50
+
+
+#打印日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    在映射实体或属性时，将数据库中表明和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+
+#----------------------------feign------------------------
+#优化feign的一些配置
+feign:
+  httpclient:
+    enabled: true # 支持httpClient的开关
+    max-connections: 200 #最大连接数
+    max-connections-per-route: 50 #单个路径的最大连接数
+  sentinel:
+    enabled: true # 开启feign对sentinel的支持，sentinel熔断功能
+
+
+
